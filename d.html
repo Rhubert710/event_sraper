@@ -1,0 +1,185 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Document</title>
+</head>
+<body >
+
+    <div id="form_div" style="text-align: center;">
+        <input id="description" type="text">
+        
+        <div class="choice" >
+            <input type="radio" id="age1" name="event_type" value="comedy">
+            <label for="age1">comedy</label>
+        </div>
+        <div class="choice" >
+            <input type="radio" id="age2" name="event_type" value="food">
+            <label for="age2">food</label>
+        </div>
+        <div class="choice" >
+            <input type="radio" id="age3" name="event_type" value="athletic">
+            <label for="age3">athletic</label>
+        </div>
+        <div class="choice" >
+            <input type="radio" id="age1" name="event_type" value="sports">
+            <label for="age1">sports</label>
+        </div>
+        <div class="choice" >
+            <input type="radio" id="age2" name="event_type" value="seasonal">
+            <label for="age2">seasonal</label>
+        </div>
+        <div class="choice" >
+            <input type="radio" id="age3" name="event_type" value="rock">
+            <label for="age3">rock</label>
+        </div>
+        <div class="choice" >
+            <input type="radio" id="age1" name="event_type" value="hipHop">
+            <label for="age1">hipHop</label>
+        </div>
+        <div class="choice" >
+            <input type="radio" id="age2" name="event_type" value="dance">
+            <label for="age2">dance</label>
+        </div>
+        <div class="choice" >
+            <input type="radio" id="age3" name="event_type" value="other">
+            <label for="age3">other</label>
+        </div>
+
+        <input id="date" type="text" value="2022-05-28">
+
+        <br>
+        <button style="width: 50vw;">Submittttt</button>
+    </div>
+    <div id="main_div" style="display: flex;flex-wrap: wrap;">
+        
+        <div class="card">
+                <img src="https://img.evbuc.com/https%3A%2F%2Fcdn.evbuc.com%2Fimages%2F262318369%2F223138078790%2F1%2Foriginal.20220407-052105?h=2000&w=720&auto=format%2Ccompress&q=75&sharp=10&s=19daf958e9f710b570782bae79d92db4" alt="NOPIC" onclick="open_iframe('https://www.eventbrite.com/e/patches-pins-expo-new-york-city-feat-cap-con-tickets-294787877477?aff=ebdssbdestsearch')">
+        </div>
+
+        <div class="card">
+            <a href="https://www.eventbrite.com/e/patches-pins-expo-new-york-city-feat-cap-con-tickets-294787877477?aff=ebdssbdestsearch">
+                <img src="https://img.evbuc.com/https%3A%2F%2Fcdn.evbuc.com%2Fimages%2F262318369%2F223138078790%2F1%2Foriginal.20220407-052105?h=2000&w=720&auto=format%2Ccompress&q=75&sharp=10&s=19daf958e9f710b570782bae79d92db4" alt="">
+            </a>
+        </div>
+ 
+    </div>
+
+    <div id="iframe_div">
+        <div style="background-color: red;text-align: right;height: 40px;" onclick="close_iframe()">X</div>
+        <iframe id="myFrame"></iframe>
+    </div>
+    </body>
+</html>
+
+<style>
+    img{
+        object-fit: contain;
+        width: 299px;
+    }
+    .card{
+        width: 299px;
+        margin: 1%;
+    }
+    a{
+        width: 299px;
+    }
+    #iframe_div{
+        z-index: 100;
+        position:absolute;
+        top: 80px; left: 19px;
+        width: 94vw;
+        height: 80vh;
+        display:none;
+    }
+    iframe{
+        width: 100%;
+        height: 100%;
+    }
+
+    .choice{
+        display: inline-block;
+    }
+    label{
+        font-size: x-small;
+        display: block;
+    }
+    input[type=text]{
+        margin-inline: 2%;
+    }
+
+</style>
+
+<script>
+function l(params) {
+    console.log(params)
+}
+//VARIABLES
+// date = document.querySelector('#date')  <-grab date on click to submit so User can change
+var new_obj = {'Posted_by_me':true};
+
+//FETCH DATA
+async function fetch_data()
+{
+
+    let httpResponse = await fetch('event_data_5_26.json');
+    let flyers = await httpResponse.json();
+
+
+
+    for (let flyer of flyers)
+    {
+        console.log(flyer);
+        let card = document.createElement('div');
+
+        card.classList.add("card");
+
+        card.innerHTML = `
+                
+                <img src="${flyer.src}" alt="NOPIC" onclick= "flyer_click(this)"
+
+                    data-url="${flyer.url}"
+
+                    data-address = "${flyer.address}"
+                    data-boro = "${flyer.boro}">
+                
+        `
+
+       main_div.appendChild(card);
+
+
+    }
+
+};
+
+// OPEN / CLOSE _I-FRAME
+function open_iframe(href)
+{
+    myFrame.src = href
+    iframe_div.style['display'] = 'block';
+}
+function close_iframe()
+{
+    iframe_div.style['display'] = 'none';
+}
+
+
+function flyer_click (element)
+{
+    //build object
+    new_obj['address'] = element.getAttribute("data-address")
+    new_obj['boro'] = element.getAttribute("data-boro")
+    new_obj['url'] = element.getAttribute("data-url")
+    new_obj['img_src'] = element.getAttribute("data-img_src")
+
+    //open iframe
+    open_iframe (new_obj['url']);
+
+
+    
+}
+
+fetch_data();
+</script>

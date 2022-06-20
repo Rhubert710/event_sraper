@@ -1,0 +1,73 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Document</title>
+</head>
+<body>
+    <div id="main_div" style="display: flex;flex-wrap: wrap;">
+        <!-- <div class="card">
+            <a href="https://www.eventbrite.com/e/patches-pins-expo-new-york-city-feat-cap-con-tickets-294787877477?aff=ebdssbdestsearch">
+                <img src="https://img.evbuc.com/https%3A%2F%2Fcdn.evbuc.com%2Fimages%2F262318369%2F223138078790%2F1%2Foriginal.20220407-052105?h=2000&w=720&auto=format%2Ccompress&q=75&sharp=10&s=19daf958e9f710b570782bae79d92db4" alt="">
+            </a>
+        </div>
+
+        <div class="card">
+            <a href="https://www.eventbrite.com/e/patches-pins-expo-new-york-city-feat-cap-con-tickets-294787877477?aff=ebdssbdestsearch">
+                <img src="https://img.evbuc.com/https%3A%2F%2Fcdn.evbuc.com%2Fimages%2F262318369%2F223138078790%2F1%2Foriginal.20220407-052105?h=2000&w=720&auto=format%2Ccompress&q=75&sharp=10&s=19daf958e9f710b570782bae79d92db4" alt="">
+            </a>
+        </div> -->
+ 
+    </div>
+</body>
+</html>
+
+<style>
+    img{
+        object-fit: contain;
+        width: 299px;
+    }
+    .card{
+        width: 299px;
+        margin: 1%;
+    }
+    a{
+        width: 299px;
+    }
+</style>
+
+<script>
+
+async function get_results(category,name)
+{
+
+    let httpResponse = await fetch('event_data_5_26.json');
+    let flyers = await httpResponse.json();
+
+
+
+    for (let flyer of flyers)
+    {
+        console.log(flyer);
+        let card = document.createElement('div');
+
+        card.classList.add("card");
+
+        card.innerHTML = `
+                
+            <a href="${flyer.url}" target="_blank">
+                <img src="${flyer.src}" alt="">
+            </a>
+                
+        `
+
+       main_div.appendChild(card);
+
+
+    }
+
+};
+get_results();
+</script>
