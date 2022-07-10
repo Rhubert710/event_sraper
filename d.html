@@ -4,13 +4,18 @@
     <meta charset="UTF-8">
     <meta http-equiv="X-UA-Compatible" content="IE=edge">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Document</title>
+    <title>UI - Scrape</title>
 </head>
 <body >
+<div id="page_one">
+    <div id="form_div">
 
-    <div id="form_div" style="text-align: center;">
-        <input id="description" type="text">
+        <button onclick="clear_description()">Ce</button>
+
+        <input id="description_input" type="text" style="margin: 0px;">
         
+        <button onclick="paste_text()">📋</button>
+
         <div class="choice" >
             <input type="radio" id="age1" name="event_type" value="comedy">
             <label for="age1">comedy</label>
@@ -48,14 +53,27 @@
             <label for="age3">other</label>
         </div>
 
-        <input id="date" type="text" value="2022-05-28">
+        <input id="date_input" type="text" value="" style="margin-right:0px;">
+
+        <select name="Day_of_week_select" id="Day_of_week_select">
+            <option value=""></option>
+            <option value="Thursday">Thursday</option>
+            <option value="Friday">Friday</option>
+            <option value="Saturday">Saturday</option>
+            <option value="Sunday">Sunday</option>
+          </select>
+
+          <span> Current Id: <span id="current_id_span"></span></span>
+          <button onclick="localStorage.clear();current_id_span.innerText = localStorage.getItem('current_id') || '0';">clear local storage</button>
+
+          <button onclick="open_page_two()" style="float:right; margin-bottom: 2%;"> next > </button>
 
         <br>
-        <button style="width: 50vw;">Submittttt</button>
+        <button style="width: 50vw;" onclick="addToLocalStorage()">Add Event</button>
     </div>
     <div id="main_div" style="display: flex;flex-wrap: wrap;">
         
-        <div class="card">
+        <!-- <div class="card">
                 <img src="https://img.evbuc.com/https%3A%2F%2Fcdn.evbuc.com%2Fimages%2F262318369%2F223138078790%2F1%2Foriginal.20220407-052105?h=2000&w=720&auto=format%2Ccompress&q=75&sharp=10&s=19daf958e9f710b570782bae79d92db4" alt="NOPIC" onclick="open_iframe('https://www.eventbrite.com/e/patches-pins-expo-new-york-city-feat-cap-con-tickets-294787877477?aff=ebdssbdestsearch')">
         </div>
 
@@ -63,75 +81,66 @@
             <a href="https://www.eventbrite.com/e/patches-pins-expo-new-york-city-feat-cap-con-tickets-294787877477?aff=ebdssbdestsearch">
                 <img src="https://img.evbuc.com/https%3A%2F%2Fcdn.evbuc.com%2Fimages%2F262318369%2F223138078790%2F1%2Foriginal.20220407-052105?h=2000&w=720&auto=format%2Ccompress&q=75&sharp=10&s=19daf958e9f710b570782bae79d92db4" alt="">
             </a>
-        </div>
+        </div> -->
  
     </div>
 
+    <div><button onclick="open_page_two()" style="float:right; margin-bottom: 2%;"> next > </button></div>
+
     <div id="iframe_div">
-        <div style="background-color: red;text-align: right;height: 40px;" onclick="close_iframe()">X</div>
+        <div style="background-color: red;text-align: center;height: 40px;" onclick="close_iframe()">CLOSE (X)</div>
         <iframe id="myFrame"></iframe>
     </div>
-    </body>
+</div>
+    
+    <!-- Page_two -->
+    <div id="page_two" style="display: none;">
+
+        <!-- page two buttons -->
+        <div>
+            <button onclick="open_page_one()" style="margin: 2%;"> < prev </button>
+            <button onclick="open_page_two()" > &#8635; Refresh </button>
+        </div>
+
+        <!-- page two main div -->
+        <div id="page_two_div"></div>
+
+        <!-- page two buttons -->
+        <div>
+            <button onclick="open_page_one()" style="margin: 2%;"> < prev </button>
+            <button onclick="open_page_two()" > &#8635; Refresh </button>
+        </div>
+
+        <!-- post to site div -->
+        <div style="height:10vh; width:99vw; text-align: center; justify-content: center;background-color: cadetblue;padding-top: 10vh;">
+            <button onclick="copy_full_list()">COPY FULL LIST</button>
+        </div>
+    </div>
+
+</body>
 </html>
 
-<style>
-    img{
-        object-fit: contain;
-        width: 299px;
-    }
-    .card{
-        width: 299px;
-        margin: 1%;
-    }
-    a{
-        width: 299px;
-    }
-    #iframe_div{
-        z-index: 100;
-        position:absolute;
-        top: 80px; left: 19px;
-        width: 94vw;
-        height: 80vh;
-        display:none;
-    }
-    iframe{
-        width: 100%;
-        height: 100%;
-    }
-
-    .choice{
-        display: inline-block;
-    }
-    label{
-        font-size: x-small;
-        display: block;
-    }
-    input[type=text]{
-        margin-inline: 2%;
-    }
-
-</style>
-
 <script>
-function l(params) {
-    console.log(params)
-}
+
+//c.l shrtct fntn
+function l(params) {console.log(params)}
+
 //VARIABLES
-// date = document.querySelector('#date')  <-grab date on click to submit so User can change
 var new_obj = {'Posted_by_me':true};
+const DATE_CONST = '2022-5-25';
 
 //FETCH DATA
 async function fetch_data()
 {
 
-    let httpResponse = await fetch('event_data_5_26.json');
+    let httpResponse = await fetch('event_data_5_26.json');// use or test `event_data_${DATE_CONST}`.json
     let flyers = await httpResponse.json();
 
 
 
     for (let flyer of flyers)
     {
-        console.log(flyer);
+        // console.log(flyer);
         let card = document.createElement('div');
 
         card.classList.add("card");
@@ -166,20 +175,238 @@ function close_iframe()
 }
 
 
+//FLYER CLICK
 function flyer_click (element)
 {
     //build object
-    new_obj['address'] = element.getAttribute("data-address")
-    new_obj['boro'] = element.getAttribute("data-boro")
-    new_obj['url'] = element.getAttribute("data-url")
-    new_obj['img_src'] = element.getAttribute("data-img_src")
+    new_obj['Address'] = element.getAttribute("data-address")
+    new_obj['Boro'] = element.getAttribute("data-boro")
+    new_obj['Contact_information'] = element.getAttribute("data-url")
+    new_obj['Img_src_url'] = element.getAttribute("src")
 
     //open iframe
-    open_iframe (new_obj['url']);
+    open_iframe (new_obj['Contact_information']);
 
 
     
 }
 
+//PASTE TEXT (BUTTON)
+async function paste_text()
+{
+    try
+    {
+        const text = await navigator.clipboard.readText();
+
+        if(description_input.value.includes(text))
+        {
+            return
+        }
+
+        description_input.value += text;
+    }
+
+    catch(er)
+    {
+        alert('Did not Paste!');
+        l(er);
+    }
+}
+
+//CLEAR DESCRITION
+clear_description = () => description_input.value = '';
+
+
+//ADD TO POST LIST (BUTTON)
+function addToLocalStorage()
+{
+
+    //Handle blank description
+    if(new_obj['Description']=='')
+    {
+        alert('add Description!');
+        return
+    }
+    //limit description to 500 chars
+    new_obj['Description'] = description_input.value.substring(0, 499);
+
+    //Handle empty radio selection
+    try
+    {
+        let event_type = document.querySelector('input[name=event_type]:checked').value;
+        new_obj['Event_type'] = event_type;
+    } 
+    catch (error) 
+    {
+        alert('add event type!');
+        return
+    }
+
+    //Upadte new_obj date and day-of-week
+
+    if(date_input.value == '' || Day_of_week_select.value =='')
+    {
+        alert('Enter date or Day_of_week');
+        return
+    }
+    new_obj['Date'] = date_input.value;
+    new_obj['Day_of_week'] = Day_of_week_select.value;
+
+
+    //Handle ID
+    if(localStorage.getItem('current_id') == null)
+    {
+        localStorage.setItem('current_id', '0');
+    }
+
+    let id = parseInt(localStorage.getItem('current_id'));
+    new_obj['id'] = id;
+
+    id = id + 1;
+    localStorage.setItem('current_id', `${id}`);
+
+    current_id_span.innerText = id;
+
+
+    //ADD TO LOCAL
+    try {
+        //rembr to somd confrmtion to avoid duplicates
+        
+        let current_list =localStorage.getItem('post_list')
+        
+        localStorage.setItem('post_list', `${current_list}, ${JSON.stringify(new_obj)}`)
+    } 
+    catch (error) 
+    {
+        alert('somthng went wrong!  (did NOT add to local storage)')
+    }
+
+    //clear description (this will prevent duplicate posts!)
+    description_input.value = ''
+    
+    //hide iframe
+    close_iframe()
+}
+
+//ON LOAD
 fetch_data();
+
+current_id_span.innerText = localStorage.getItem('current_id') || '0';
+date_input.value = DATE_CONST;
+
+
+
+
+///// SECOND PAGE //////
+
+//PAGE NAVIGATION (BUTTONS)
+function open_page_two()
+{
+    page_one.style['display'] = 'none';
+    page_two.style['display'] = 'block';
+
+    //clear stale data
+    page_two_div.innerHTML = '';
+
+    //parse and remove null values
+
+    let full_list = JSON.parse(`[${localStorage.getItem('post_list')}]`);
+    full_list =  full_list.filter(obj => obj != null);
+
+
+    const error_list = full_list.filter(obj => obj.Boro == 'NONE' || obj.Address == 'NONE');
+
+    for (let obj of error_list)
+    {
+        let card = document.createElement('div');
+
+        card.classList.add("card");
+
+        card.innerHTML = `
+                
+                <img src="${obj.Img_src_url}" alt="NOPIC" onclick= "flyer_page_two_click(this)"
+
+                    data-url="${obj.Contact_information}"
+
+                    data-address = "${obj.Address}"
+                    data-boro = "${obj.Boro}">
+
+
+                    <input id="address_corrected_input_${obj.id}" type="text" value="${obj.Address}">
+
+                    <select name="Boro_corrected_select" id="Boro_corrected_select_${obj.id}">
+                        <option value="${obj.Boro}">${obj.Boro}</option>
+                        <option value="brooklyn">brooklyn</option>
+                        <option value="queens">queens</option>
+                        <option value="manhattan">manhattan</option>
+                        <option value="bronx">bronx</option>
+                        <option value="staten">staten</option>
+                        <option value="nassau">nassau</option>
+                    </select>
+
+                    <button data-index = "${obj.id}" onclick="update_error(this)">Update</button>
+                    <span id="page_two_obj_status_span">❌</span>
+
+
+        `
+
+        page_two_div.appendChild(card);
+
+    }
+
+    console.log(error_list);
+}
+//OPEN PAGE ONE
+function open_page_one()
+{
+    page_two.style['display'] = 'none';
+    page_one.style['display'] = 'block';
+}
+
+function flyer_page_two_click(element)
+{
+    let url = element.getAttribute('data-url');
+    window.open(url, '_blank').focus();
+}
+
+//UPDATE (BUTTON)
+function update_error(element)
+{
+    try
+    {
+        let full_list = JSON.parse(`[${localStorage.getItem('post_list')}]`);
+        full_list =  full_list.filter(obj => obj != null);
+
+        let index = element.getAttribute('data-index');
+
+        let objIndex = full_list.findIndex((obj => obj.id == index));
+
+        full_list[objIndex].Address = document.querySelector(`#address_corrected_input_${index}`).value;
+        full_list[objIndex].Boro = document.querySelector(`#Boro_corrected_select_${index}`).value;
+
+        localStorage.setItem('post_list', JSON.stringify(full_list).slice(1,-1));
+        console.log(full_list);
+
+        page_two_obj_status_span.innerText = '✅';
+
+    }
+    catch
+    {
+        alert('didnt work!')
+    }
+}
+
+//POST REQUEST
+function copy_full_list()
+{
+    //abandend ajax post beacuse dont want to add CORS module to my django project
+
+    let full_list = JSON.parse(`[${localStorage.getItem('post_list')}]`);
+    full_list =  full_list.filter(obj => obj != null);
+
+    navigator.clipboard.writeText(JSON.stringify(full_list));
+}
+
 </script>
+
+<link rel="stylesheet" href="d.css">

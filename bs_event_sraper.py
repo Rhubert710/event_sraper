@@ -28,7 +28,7 @@ data_on_page = True
 '''
 main
 '''
-soup = bsParser('https://www.eventbrite.com/d/ny--new-york/all-events/?page=47')
+soup = bsParser('https://www.eventbrite.com/d/ny--new-york/all-events/?start_date=2022-07-24&end_date=2022-07-24&page=47')
 
 
 while(data_on_page):
@@ -54,7 +54,7 @@ while(data_on_page):
     print(f'page scraped: {page}')
 
     page+=1
-    soup = bsParser(f'https://www.eventbrite.com/d/ny--new-york/all-events/?page={page}')
+    soup = bsParser(f'https://www.eventbrite.com/d/ny--new-york/all-events/?start_date=2022-07-24&end_date=2022-07-24&page={page}')
 
 
 '''
@@ -81,7 +81,9 @@ for i, article_url in enumerate(individual_event_hrefs, 1):
         new_porfile_pic_obj['src'] = 'NOPIC'
 
     
+    new_obj['url'] = article_url
     new_porfile_pic_obj['url'] = article_url
+
 
     # get address info
     try:
@@ -96,7 +98,7 @@ for i, article_url in enumerate(individual_event_hrefs, 1):
 
     boro = 'NONE'
     if 'brooklyn' in address.lower():
-        boro = 'brkln'
+        boro = 'brooklyn'
     if 'queens' in address.lower():
         boro = 'queens'
     if 'manhattan' in address.lower():
@@ -117,12 +119,9 @@ for i, article_url in enumerate(individual_event_hrefs, 1):
 
     # set address information
 
-    if new_porfile_pic_obj:
+    new_porfile_pic_obj['address'] = address
+    new_porfile_pic_obj['boro'] = boro
 
-        new_porfile_pic_obj['address'] = address
-        new_porfile_pic_obj['boro'] = boro
-
-    
     new_obj['boro'] = boro
     new_obj['address'] = address
 
@@ -131,12 +130,10 @@ for i, article_url in enumerate(individual_event_hrefs, 1):
 
     full_size_pics = soup.find_all('img', class_='eds-max-img')
 
-    new_obj['url'] = article_url
-
     for img in full_size_pics:
 
         new_obj['src'] = img['src']
-        profile_pictue_list.append(copy.deepcopy(new_obj))
+        picture_list.append(copy.deepcopy(new_obj))
         
 
     # append and print

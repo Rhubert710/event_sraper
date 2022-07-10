@@ -1,0 +1,43 @@
+#form_div
+{
+    position: sticky;
+    top: 0px;
+
+    text-align: center;
+    background-color: white;
+}
+img{
+    object-fit: contain;
+    width: 299px;
+}
+.card{
+    width: 299px;
+    margin: 1%;
+}
+a{
+    width: 299px;
+}
+#iframe_div{
+    z-index: 100;
+    position:fixed;
+    top: 80px; 
+    left: 19px;
+    width: 94vw;
+    height: 80vh;
+    display:none;
+}
+iframe{
+    width: 100%;
+    height: 100%;
+}
+
+.choice{
+    display: inline-block;
+}
+label{
+    font-size: x-small;
+    display: block;
+}
+input[type=text]{
+    margin-inline: 2%;
+}
