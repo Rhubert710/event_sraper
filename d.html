@@ -50,7 +50,23 @@
         </div>
         <div class="choice" >
             <input type="radio" id="age3" name="event_type" value="other">
-            <label for="age3">other</label>
+            <label for="age3">otherMusc</label>
+        </div>
+        <div class="choice" >
+            <input type="radio" id="age3" name="event_type" value="drinks">
+            <label for="age3">drinks</label>
+        </div>
+        <div class="choice" >
+            <input type="radio" id="age3" name="event_type" value="outdoor">
+            <label for="age3">outdoor</label>
+        </div>
+        <div class="choice" >
+            <input type="radio" id="age3" name="event_type" value="community">
+            <label for="age3">community</label>
+        </div>
+        <div class="choice" >
+            <input type="radio" id="age3" name="event_type" value="class">
+            <label for="age3">class</label>
         </div>
 
         <input id="date_input" type="text" value="" style="margin-right:0px;">
@@ -114,6 +130,7 @@
         <!-- post to site div -->
         <div style="height:10vh; width:99vw; text-align: center; justify-content: center;background-color: cadetblue;padding-top: 10vh;">
             <button onclick="copy_full_list()">COPY FULL LIST</button>
+            <div id="copy_success_div"></div>
         </div>
     </div>
 
@@ -127,13 +144,13 @@ function l(params) {console.log(params)}
 
 //VARIABLES
 var new_obj = {'Posted_by_me':true};
-const DATE_CONST = '2022-5-25';
+var DATE_CONST = '2022-07-24';
 
 //FETCH DATA
 async function fetch_data()
 {
 
-    let httpResponse = await fetch('event_data_5_26.json');// use or test `event_data_${DATE_CONST}`.json
+    let httpResponse = await fetch(`event_data_2022-07-24.json`);// use or test `event_data_${DATE_CONST}`.json
     let flyers = await httpResponse.json();
 
 
@@ -235,6 +252,11 @@ function addToLocalStorage()
     {
         let event_type = document.querySelector('input[name=event_type]:checked').value;
         new_obj['Event_type'] = event_type;
+
+        // clear radio selection
+        var radList = document.getElementsByName('event_type');
+        for (var i = 0; i < radList.length; i++) 
+            {if(radList[i].checked) radList[i].checked = false;}
     } 
     catch (error) 
     {
@@ -294,7 +316,14 @@ fetch_data();
 current_id_span.innerText = localStorage.getItem('current_id') || '0';
 date_input.value = DATE_CONST;
 
+copy_success_div.innerText = '';
 
+//set DATE_CONST from input value
+date_input.addEventListener('change', function(e) 
+    {
+    
+        DATE_CONST = e.target.value;
+    });
 
 
 ///// SECOND PAGE //////
@@ -345,7 +374,7 @@ function open_page_two()
                     </select>
 
                     <button data-index = "${obj.id}" onclick="update_error(this)">Update</button>
-                    <span id="page_two_obj_status_span">❌</span>
+                    <span id="page_two_obj_status_span_${obj.id}">❌</span>
 
 
         `
@@ -387,7 +416,7 @@ function update_error(element)
         localStorage.setItem('post_list', JSON.stringify(full_list).slice(1,-1));
         console.log(full_list);
 
-        page_two_obj_status_span.innerText = '✅';
+        document.querySelector(`#page_two_obj_status_span_${index}`).innerText = '✅';
 
     }
     catch
@@ -404,7 +433,11 @@ function copy_full_list()
     let full_list = JSON.parse(`[${localStorage.getItem('post_list')}]`);
     full_list =  full_list.filter(obj => obj != null);
 
-    navigator.clipboard.writeText(JSON.stringify(full_list));
+    revd_list = full_list.reverse();
+
+    navigator.clipboard.writeText(JSON.stringify(revd_list));
+
+    copy_success_div.innerText = 'reversed list copied';
 }
 
 </script>

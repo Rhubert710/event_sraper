@@ -15,7 +15,10 @@ def bsParser(url):
     return bs
 
 #variables#
-page = 49
+page = 1
+
+DATE = '2022-07-24'
+DATE_TEXT = 'Jul 24'
 
 data_on_page = True;
 individual_event_hrefs = []
@@ -28,7 +31,7 @@ data_on_page = True
 '''
 main
 '''
-soup = bsParser('https://www.eventbrite.com/d/ny--new-york/all-events/?start_date=2022-07-24&end_date=2022-07-24&page=47')
+soup = bsParser(f'https://www.eventbrite.com/d/ny--new-york/all-events/?end_date={DATE}&page={page}&start_date={DATE}')
 
 
 while(data_on_page):
@@ -47,14 +50,17 @@ while(data_on_page):
 
     for event in events_on_current_page:
 
-        new_href = event.find('a', class_='eds-event-card-content__action-link')
-        individual_event_hrefs.append(new_href['href'])
+        date_on_card = event.find('div', class_='eds-event-card-content__sub-title eds-text-color--primary-brand eds-l-pad-bot-1 eds-l-pad-top-2 eds-text-weight--heavy eds-text-bm')
+        if(DATE_TEXT in date_on_card.text):
+
+            new_href = event.find('a', class_='eds-event-card-content__action-link')
+            individual_event_hrefs.append(new_href['href'])
 
     # print and increment
     print(f'page scraped: {page}')
 
     page+=1
-    soup = bsParser(f'https://www.eventbrite.com/d/ny--new-york/all-events/?start_date=2022-07-24&end_date=2022-07-24&page={page}')
+    soup = bsParser(f'https://www.eventbrite.com/d/ny--new-york/all-events/?end_date={DATE}-28&page={page}&start_date={DATE}')
 
 
 '''
@@ -148,7 +154,7 @@ write to database
 
 combined_list = picture_list + profile_pictue_list
 
-with open('event_data_5_26.json', 'w') as file:
+with open(f'event_data_{DATE}.json', 'w') as file:
     json.dump(combined_list, file)
 
 

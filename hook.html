@@ -1,0 +1,58 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <meta charset='utf-8'>
+    <meta http-equiv='X-UA-Compatible' content='IE=edge'>
+    <title>Page Title</title>
+    <meta name='viewport' content='width=device-width, initial-scale=1'>
+    <link rel='stylesheet' type='text/css' media='screen' href='main.css'>
+    <script src='main.js'></script>
+</head>
+<body>
+
+    <div id="one"> 
+        <div>one</div>
+        <div class="value"></div>
+    </div>
+
+ <!--  -->
+    <div id="two" class="visable"> 
+        <div>two</div>
+        <div class="value"></div>
+    </div>
+
+    <button id="bu">toggle</button>
+    <input type="number" name="" id="i">
+
+</body>
+</html>
+
+<script>
+    let value = '4';
+
+    document.querySelectorAll('.value').forEach((i) => i.innerHTML = value);
+    i.value=value
+
+    //listen
+    bu.addEventListener("click", function() 
+    {
+     
+        if(two.classList.contains('visable'))
+        {two.style['display'] ='none';
+        two.classList.remove('visable');}
+        else
+        {two.style['display'] ='block';
+        two.classList.add('visable');}
+        
+
+    });
+
+    i.addEventListener('change', function(e) 
+    {
+     
+        value = e.target.value;
+        document.querySelectorAll('.value').forEach((i) => i.innerHTML = value);
+        
+
+    });
+</script>
