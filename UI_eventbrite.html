@@ -12,7 +12,7 @@
 
         <button onclick="clear_description()">Ce</button>
 
-        <input id="description_input" type="text" style="margin: 0px;">
+        <input id="description_input" type="text" style="margin: 0px; width:249px;">
         
         <button onclick="paste_text()">📋</button>
 
@@ -62,7 +62,7 @@
         </div>
         <div class="choice" >
             <input type="radio" id="age3" name="event_type" value="community">
-            <label for="age3">community</label>
+            <label for="age3">comm</label>
         </div>
         <div class="choice" >
             <input type="radio" id="age3" name="event_type" value="class">
@@ -143,14 +143,17 @@
 function l(params) {console.log(params)}
 
 //VARIABLES
-var new_obj = {'Posted_by_me':true};
-var DATE_CONST = '2022-07-24';
+
+let new_obj = {'Posted_by_me':true};
+// var DATE_CONST = `2022-08-${19}`;
+
+let DATE_CONST = `2022-10-01`;
 
 //FETCH DATA
 async function fetch_data()
 {
 
-    let httpResponse = await fetch(`event_data_2022-07-24.json`);// use or test `event_data_${DATE_CONST}`.json
+    let httpResponse = await fetch(`${DATE_CONST}_event_data.json`);// use or test `event_data_${DATE_CONST}`.json
     let flyers = await httpResponse.json();
 
 
@@ -169,9 +172,11 @@ async function fetch_data()
                     data-url="${flyer.url}"
 
                     data-address = "${flyer.address}"
-                    data-boro = "${flyer.boro}">
+                    data-boro = "${flyer.boro}"
+                    data-lattitude = "${flyer.lattitude}"
+                    data-longitude = "${flyer.longitude}"
+                >`
                 
-        `
 
        main_div.appendChild(card);
 
@@ -200,11 +205,16 @@ function flyer_click (element)
     new_obj['Boro'] = element.getAttribute("data-boro")
     new_obj['Contact_information'] = element.getAttribute("data-url")
     new_obj['Img_src_url'] = element.getAttribute("src")
+    new_obj['lattitude'] = element.getAttribute("data-lattitude")
+    new_obj['longitude'] = element.getAttribute("data-longitude")
+    new_obj['Orientation'] = 'q';
+    
+    if(element.offsetHeight < 199) new_obj['Orientation'] = 'w';
+    if(element.offsetHeight > 328) new_obj['Orientation'] = 'l';
+    
 
     //open iframe
     open_iframe (new_obj['Contact_information']);
-
-
     
 }
 
@@ -390,6 +400,8 @@ function open_page_one()
 {
     page_two.style['display'] = 'none';
     page_one.style['display'] = 'block';
+
+    copy_success_div.innerText = '';
 }
 
 function flyer_page_two_click(element)

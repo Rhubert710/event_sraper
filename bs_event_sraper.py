@@ -1,10 +1,15 @@
 import sqlite3
 import csv
+
 from bs4 import BeautifulSoup
 import requests
 import pandas as pd
 import json
 import copy
+
+
+
+
 
 
 #functions#
@@ -17,10 +22,9 @@ def bsParser(url):
 #variables#
 page = 1
 
-DATE = '2022-07-24'
-DATE_TEXT = 'Jul 24'
+DATE = f'2022-10-01'
+DATE_TEXT = f'Oct {1}'
 
-data_on_page = True;
 individual_event_hrefs = []
 picture_list = []
 profile_pictue_list = []
@@ -34,14 +38,14 @@ main
 soup = bsParser(f'https://www.eventbrite.com/d/ny--new-york/all-events/?end_date={DATE}&page={page}&start_date={DATE}')
 
 
-while(data_on_page):
-# while(page<=49):
+# while(data_on_page):/
+while(page<=1):
 
 
     # base case to end loop
     end = soup.find_all("section", class_="empty-state")
     if end:
-        print('break')
+        print('Done sdraping pages')
         break
 
     ## GET INDIVIDUAL EVENT HREFS ##
@@ -67,7 +71,7 @@ while(data_on_page):
 Going through each individual article
 '''
 total_articles = len(individual_event_hrefs)
-
+print(total_articles)
 #loop
 for i, article_url in enumerate(individual_event_hrefs, 1):
 
@@ -82,9 +86,17 @@ for i, article_url in enumerate(individual_event_hrefs, 1):
 
         profile_pic = soup.find('img', class_='listing-image--main')
         new_porfile_pic_obj['src'] = profile_pic['src']
-
+    
     except:
-        new_porfile_pic_obj['src'] = 'NOPIC'
+        try:
+
+            profile_pic_container = soup.find('picture')
+            profile_pic = profile_pic_container.find('img')
+
+            new_porfile_pic_obj['src'] = profile_pic['src']
+
+        except:
+            new_porfile_pic_obj['src'] = 'NOPIC'
 
     
     new_obj['url'] = article_url
@@ -98,7 +110,7 @@ for i, article_url in enumerate(individual_event_hrefs, 1):
 
         address = f'{address_p_tags[1].string} {address_p_tags[2].string}'
     except:
-        adress = 'NONE'
+        address = 'NONE'
 
     # determine boro
 
@@ -132,6 +144,27 @@ for i, article_url in enumerate(individual_event_hrefs, 1):
     new_obj['address'] = address
 
 
+    # get lattitude and longitude 
+    try:
+
+        lattitude = soup.find('meta', property='event:location:latitude')
+        longitude = soup.find('meta', property='event:location:longitude')
+
+        print(1)
+        
+    except:
+
+        lattitude = 'NONE'
+        longitude = 'NONE'
+
+        print(2)
+    
+    new_obj['lattitude'] = lattitude['content']
+    new_obj['longitude'] = longitude['content']
+    new_porfile_pic_obj['lattitude'] = lattitude['content']
+    new_porfile_pic_obj['longitude'] = longitude['content']
+
+
     # grab all full-size images & Create a new object for each
 
     full_size_pics = soup.find_all('img', class_='eds-max-img')
@@ -140,11 +173,11 @@ for i, article_url in enumerate(individual_event_hrefs, 1):
 
         new_obj['src'] = img['src']
         picture_list.append(copy.deepcopy(new_obj))
-        
 
     # append and print
     profile_pictue_list.append(new_porfile_pic_obj)
 
+    
     print(f'articles scraped: {i} of{total_articles}')
  
 
@@ -154,7 +187,7 @@ write to database
 
 combined_list = picture_list + profile_pictue_list
 
-with open(f'event_data_{DATE}.json', 'w') as file:
+with open(f'{DATE}_event_data.json', 'w') as file:
     json.dump(combined_list, file)
 
 
