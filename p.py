@@ -1,13 +1,16 @@
-l=[]
+# l=[]
 
 
-d={'l':'l','k':'k'}
-l.append(d)
+# d={'l':'l','k':'k'}
+# l.append(d)
 
-i=5
-l.append(i)
+# i=5
+# l.append(i)
 
-d['l']='o'
-i=8
+# d['l']='o'
+# i=8
 
-print(l)
+# print(l)
+
+# g ='llkk'
+# print(g[-1])

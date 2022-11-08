@@ -34,7 +34,13 @@ for d in a:
     ## cmbne ingts MEASURE into single arry
     for i in range(1,11):
     
-        ms.append(d[f'strMeasure{i}'])
+        formatted_measure = d[f'strMeasure{i}']
+
+        if (d[f'strMeasure{i}'] !='' and d[f'strMeasure{i}'][-1] !=' '):
+            formatted_measure = d[f'strMeasure{i}'] + ' '
+
+
+        ms.append(formatted_measure)
         # print(d[f'strIngredient{i}'])
     
     #remove empty values
@@ -60,7 +66,7 @@ for d in a:
         "strInstructions":d["strInstructions"],
         "strDrinkThumb":d["strDrinkThumb"],
         "ingredients":d["ig"],
-        "measurmens":d['ms']
+        "measures":d['ms']
 
 
     }
