@@ -22,8 +22,8 @@ def bsParser(url):
 #variables#
 page = 1
 
-DATE = f'2022-10-01'
-DATE_TEXT = f'Oct {1}'
+DATE = f'2023-01-27'
+DATE_TEXT = f'Jan 27'
 
 individual_event_hrefs = []
 picture_list = []
@@ -38,7 +38,7 @@ main
 soup = bsParser(f'https://www.eventbrite.com/d/ny--new-york/all-events/?end_date={DATE}&page={page}&start_date={DATE}')
 
 
-# while(data_on_page):/
+# while(data_on_page):
 while(page<=1):
 
 
@@ -103,12 +103,19 @@ for i, article_url in enumerate(individual_event_hrefs, 1):
     new_porfile_pic_obj['url'] = article_url
 
 
+    
+    
     # get address info
     try:
-        location_h2_element = soup.find(id="location-heading")
-        address_p_tags = location_h2_element.parent.parent.find_all('p')
+        # location_h2_element = soup.find(id="location-heading")
+        # address_p_tags = location_h2_element.parent.parent.find_all('p')
 
-        address = f'{address_p_tags[1].string} {address_p_tags[2].string}'
+        # address = f'{address_p_tags[1].string} {address_p_tags[2].string}'
+
+        location_section = soup.find('section' , {"aria-labelledby":"location-heading"})
+        address_content = location_section.find('p')
+
+        address = address_content.contents[1].getText().strip()
     except:
         address = 'NONE'
 
@@ -150,7 +157,7 @@ for i, article_url in enumerate(individual_event_hrefs, 1):
         lattitude = soup.find('meta', property='event:location:latitude')
         longitude = soup.find('meta', property='event:location:longitude')
 
-        print(1)
+        # print(1)
         
     except:
 
